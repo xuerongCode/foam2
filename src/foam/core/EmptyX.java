@@ -56,6 +56,13 @@ abstract class AbstractX
     return ((FacetManager)get("facetManager")).create(type, this);
   }
 
+  private X clone(X left, X right) {
+    AbstractX result = this.clone();
+    result.setLeftParent(left);
+    result.setRightParent(right);
+    return result;
+  }
+
   @Override 
   protected AbstractX clone() {
     AbstractX x = null;
@@ -66,6 +73,12 @@ abstract class AbstractX
     }
     return x;
   }
+
+  abstract protected Object getKey();
+  abstract protected X getLeftParent();
+  abstract protected X getRightParent();
+  abstract protected void setLeftParent(X leftParent);
+  abstract protected void setRightParent(X rightParent);
 }
 
 
@@ -73,17 +86,23 @@ abstract class AbstractX
 class XI
   extends AbstractX
 {
-  final X      parent_;
-  final Object key_;
-  final Object value_;
+  X             leftParent_;
+  X             rightParent_;
+  final Object  key_;
+  final Object  value_;
 
-  XI(X parent, Object key, Object value) {
-    parent_ = parent;
-    key_    = key;
-    value_  = value;
+  XI(X leftParent, X rightParent, Object key, Object value) {
+    leftParent_   = leftParent;
+    rightParent_  = rightParent;
+    key_          = key;
+    value_        = value;
   }
 
-  X parent() { return parent_; }
+  protected Object getKey() { return key_; }
+  protected X getLeftParent() { return leftParent_; }
+  protected X getRightParent() { return rightParent_; }
+  protected void setLeftParent(X leftParent) { leftParent_ = leftParent; }
+  protected void setRightParent(X rightParent) { rightParent_ = rightParent; }
 
   public Object get(X x, Object key) {
     return key.equals(key_) ? value_ : parent().get(key);
@@ -95,19 +114,23 @@ class XI
 class FactoryXI
   extends AbstractX
 {
-  final X        parent_;
-  final Object   key_;
-  final XFactory factory_;
+  X               leftParent_;
+  X               rightParent_;
+  final Object    key_;
+  final XFactory  factory_;
 
-  FactoryXI(X parent, Object key, XFactory factory) {
-    parent_  = parent;
-    key_     = key;
-    factory_ = factory;
+  FactoryXI(X leftParent, X rightParent, Object key, XFactory factory) {
+    leftParent_   = leftParent;
+    rightParent_  = rightParent;
+    key_          = key;
+    value_        = value;
   }
 
-  X parent() {
-    return parent_;
-  }
+  protected Object getKey() { return key_; }
+  protected X getLeftParent() { return leftParent_; }
+  protected X getRightParent() { return rightParent_; }
+  protected void setLeftParent(X leftParent) { leftParent_ = leftParent; }
+  protected void setRightParent(X rightParent) { rightParent_ = rightParent; }
 
   public Object get(X x, Object key) {
     return key.equals(key_) ?
@@ -128,4 +151,10 @@ public class EmptyX
   public static X instance() { return x_; }
 
   public Object get(X x, Object key) { return null; }
+
+  protected Object getKey() { throw new UnsupportedOperationException("Unsupported operation: getKey"); }
+  protected X getLeftParent() { throw new UnsupportedOperationException("Unsupported operation: getLeftParent"); }
+  protected X getRightParent() { throw new UnsupportedOperationException("Unsupported operation: getRightParent"); }
+  protected void setLeftParent(X left) { throw new UnsupportedOperationException("Unsupported operation: setLeftParent"); }
+  protected void setRightParent(X right) { throw new UnsupportedOperationException("Unsupported operation: setRightParent"); }
 }
