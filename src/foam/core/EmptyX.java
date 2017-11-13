@@ -20,7 +20,7 @@ package foam.core;
 // TODO: make this a functional tree rather than a linked list. (for performance)
 
 abstract class AbstractX
-  implements X
+  implements X, Cloneable
 {
   public Object get(Object key) {
     return get(this, key);
@@ -54,6 +54,17 @@ abstract class AbstractX
 
   public <T> T create(Class<T> type) {
     return ((FacetManager)get("facetManager")).create(type, this);
+  }
+
+  @Override 
+  protected AbstractX clone() {
+    AbstractX x = null;
+    try {
+      x = (AbstractX) super.clone();
+    } catch ( CloneNotSupportedException e ) {
+      e.printStackTrace();
+    }
+    return x;
   }
 }
 
