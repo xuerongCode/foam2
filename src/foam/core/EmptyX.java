@@ -41,11 +41,23 @@ abstract class AbstractX
   }
 
   public X put(Object key, Object value) {
-    return new XI(this, key, value);
+    if ( getKey().toString().compareTo(key.toString()) == 0 ) {
+      return new XI(getLeftParent(), getRightParent(), getKey(), value);
+    } else if ( getKey().toString().compareTo(key.toString()) < 0 ) {
+      return clone(getLeftParent().put(key, value), getRightParent());
+    } else {
+      return clone(getLeftParent(), getRightParent().put(key, value));
+    }
   }
 
   public X putFactory(Object key, XFactory factory) {
-    return new FactoryXI(this, key, factory);
+    if ( getKey().toString().compareTo(key.toString()) == 0 ) {
+      return new FactoryXI(getLeftParent(), getRightParent(), getKey(), factory);
+    } else if ( getKey().toString().compareTo(key.toString()) < 0 ) {
+      return clone(getLeftParent().putFactory(key, factory), getRightParent());
+    } else {
+      return clone(getLeftParent(), getRightParent().putFactory(key, factory));
+    }
   }
 
   public Object getInstanceOf(Object value, Class type) {
@@ -105,7 +117,13 @@ class XI
   protected void setRightParent(X rightParent) { rightParent_ = rightParent; }
 
   public Object get(X x, Object key) {
-    return key.equals(key_) ? value_ : parent().get(key);
+    if ( key_.toString().compareTo(key.toString()) == 0 ) {
+      return value_;
+    } else if ( key_.toString().compareTo(key.toString()) < 0 ) {
+      return getLeftParent().get(key);
+    } else {
+      return getRightParent().get(key);
+    }
   }
 }
 
@@ -123,7 +141,7 @@ class FactoryXI
     leftParent_   = leftParent;
     rightParent_  = rightParent;
     key_          = key;
-    value_        = value;
+    factory_      = factory;
   }
 
   protected Object getKey() { return key_; }
@@ -133,9 +151,13 @@ class FactoryXI
   protected void setRightParent(X rightParent) { rightParent_ = rightParent; }
 
   public Object get(X x, Object key) {
-    return key.equals(key_) ?
-      factory_.create(x)    :
-      parent().get(x, key) ;
+    if ( key_.toString().compareTo(key.toString()) == 0 ) {
+      return factory_.create(x);
+    } else if ( key_.toString().compareTo(key.toString()) < 0 ) {
+      return getLeftParent().get(x, key);
+    } else {
+      return getRightParent().get(x, key);
+    }
   }
 }
 
@@ -151,6 +173,14 @@ public class EmptyX
   public static X instance() { return x_; }
 
   public Object get(X x, Object key) { return null; }
+
+  public X put(Object key, Object value) {
+    return new XI(this, this, key, value);
+  }
+
+  public X putFactory(Object key, XFactory factory) {
+    return new FactoryXI(this, this, key, factory);
+  }
 
   protected Object getKey() { throw new UnsupportedOperationException("Unsupported operation: getKey"); }
   protected X getLeftParent() { throw new UnsupportedOperationException("Unsupported operation: getLeftParent"); }
