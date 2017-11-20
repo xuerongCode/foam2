@@ -18,6 +18,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.InputStreamReader;
 
+/**
+ * using http protocol transmit octet-stream between URL
+ */
 public class RestBlobService
     extends AbstractBlobService
 {
@@ -38,6 +41,12 @@ public class RestBlobService
     return address_;
   }
 
+  /**
+   * wrap octet-stream inside Blob into a Http request, then sent to URL address using PUT
+   * @param x context
+   * @param blob octet stream blob which will be written to the HttpOutputStream
+   * @return IdentifiedBlob
+   */
   @Override
   public Blob put_(X x, Blob blob) {
     if ( blob instanceof IdentifiedBlob ) {
@@ -103,6 +112,12 @@ public class RestBlobService
     }
   }
 
+  /**
+   * retrieve octet-stream from Http response
+   * @param x context
+   * @param id part of URL request, identify unique resources
+   * @return contain retrieved data from Http request
+   */
   @Override
   public Blob find_(X x, Object id) {
     InputStream is = null;
