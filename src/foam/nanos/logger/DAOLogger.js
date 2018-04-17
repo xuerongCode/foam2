@@ -9,6 +9,7 @@ foam.CLASS({
   imports: [
     'user'
   ],
+  extends: 'foam.nanos.logger.AbstractLogger',
   javaImports: [
     'java.util.Date',
     'foam.core.*',
@@ -17,13 +18,12 @@ foam.CLASS({
   requires: [
     'foam.nanos.logger.Log'
   ],
-  javaExtends: [ 'foam.nanos.logger.AbstractLogger' ],
   properties: [
     {
       class: 'String',
       name: 'logDAOKey',
       hidden: true,
-      value: 'logDAO'
+      value: 'loggerDAO'
     },
     {
       class: 'foam.dao.DAOProperty',
@@ -45,15 +45,6 @@ foam.CLASS({
       } else {
         return '' + e + '\n';
       }
-    },
-    function createModel(type, detail) {
-      return this.Log.create({
-        time: new Date(),
-        from: 'Web',
-        user: (! this.user) ? '' : '' + this.user.firstName + ' ' + this.user.lastName,
-        type: type,
-        detail: detail
-      })
     },
     {
       name: 'createModel',
@@ -85,7 +76,7 @@ foam.CLASS({
       log.setFrom("BackEnd");
       log.setUser(System.getProperty("user.name"));
       log.setType(type);
-      log.setDetail(combine(args));
+      log.setDetail(combine(detail));
       return log;
       `
     },
@@ -111,7 +102,74 @@ foam.CLASS({
       ],
       code: function log() {
         this.outputLogger('log', Array.from(arguments));
-      }
+      },
+      javaCode: `
+        logDAO_.put(createModel("log", args));
+      `
+    },
+    {
+      name: 'debug',
+      javaReturns: 'void',
+      args: [
+        {
+          name: 'args',
+          javaType: 'Object...'
+        }
+      ],
+      code: function debug() {
+        this.outputLogger('debug', Array.from(arguments));
+      },
+      javaCode: `
+        logDAO_.put(createModel("debug", args));
+      `
+    },
+    {
+      name: 'info',
+      javaReturns: 'void',
+      args: [
+        {
+          name: 'args',
+          javaType: 'Object...'
+        }
+      ],
+      code: function info() {
+        this.outputLogger('info', Array.from(arguments));
+      },
+      javaCode: `
+        logDAO_.put(createModel("info", args));
+      `
+    },
+    {
+      name: 'warning',
+      javaReturns: 'void',
+      args: [
+        {
+          name: 'args',
+          javaType: 'Object...'
+        }
+      ],
+      code: function warning() {
+        this.outputLogger('warning', Array.from(arguments));
+      },
+      javaCode: `
+        logDAO_.put(createModel("warning", args));
+      `
+    },
+    {
+      name: 'error',
+      javaReturns: 'void',
+      args: [
+        {
+          name: 'args',
+          javaType: 'Object...'
+        }
+      ],
+      code: function error() {
+        this.outputLogger('error', Array.from(arguments));
+      },
+      javaCode: `
+        logDAO_.put(createModel("error", args));
+      `
     }
   ]
 })

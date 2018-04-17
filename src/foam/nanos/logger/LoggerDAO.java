@@ -49,9 +49,9 @@ public class LoggerDAO
     return sink;
   }
   public FObject find_(X x, Object o) {
-    throw new NoSuchMethodException("LoggerDAO do not support find_");
+    throw new RuntimeException("LoggerDAO do not support find_");
   }
   public FObject remove_(X x, FObject obj) {
-    throw new NoSuchMethodException("LoggerDAO do not support remove_");
+    throw new RuntimeException("LoggerDAO do not support remove_");
   }
 }
