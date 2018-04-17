@@ -114,5 +114,7 @@ FOAM_FILES([
   { name: 'foam/nanos/demo/relationship/Course' },
   { name: 'foam/nanos/demo/relationship/Professor' },
   { name: 'foam/nanos/demo/relationship/Student' },
-  { name: 'foam/nanos/demo/relationship/Controller' }
+  { name: 'foam/nanos/demo/relationship/Controller' },
+  { name: 'foam/nanos/logger/Log'},
+  { name: 'foam/nanos/logger/DAOLogger'}
 ]);
