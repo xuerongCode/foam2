@@ -7,16 +7,13 @@ foam.CLASS({
   package: 'foam.nanos.logger',
   name: 'Log',
 
-  tableColumns: ['time', 'from', 'user', 'type', 'detail'],
+  tableColumns: ['id', 'time', 'from', 'user', 'type', 'detail'],
 
   properties: [
     {
-      class: 'String',
+      class: 'Int',
       name: 'id',
-      documentation: 'id for the log',
-      factory: function() {
-        return '' + this.time.getTime();
-      }
+      documentation: 'id for the log'
     },
     {
       class: 'DateTime',
@@ -24,7 +21,8 @@ foam.CLASS({
       documentation: 'time of log',
       factory: function() {
         return new Date();
-      }
+      },
+      javaFactory: 'return new java.util.Date();'
     },
     {
       class: 'String',

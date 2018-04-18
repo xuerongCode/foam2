@@ -34,7 +34,9 @@ public class LoggerDAO
   public FObject put_(X x, FObject obj) {
     if ( obj == null ) return obj;
     //find index to put value
+    PropertyInfo idProp = (PropertyInfo) getOf().getAxiomByName("id");
     int index = index_.incrementAndGet() % maxSize_;
+    idProp.set(obj, index);
     loggers_[index] = obj;
     return obj;
 }
@@ -44,7 +46,9 @@ public class LoggerDAO
     Subscription sub       = new Subscription();
     int length = index_.get();
     length =  length >= maxSize_ ? maxSize_ : length + 1;
+    System.out.println(length);
     for ( int i = 0 ; i < length ; i++ ) {
+      System.out.println(i + " : " + loggers_[i]);
       if ( sub.getDetached() ) break;
       decorated.put(loggers_[i], sub);
     }
