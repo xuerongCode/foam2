@@ -224,7 +224,8 @@ var classes = [
   'foam.lib.query.TestModel',
   'foam.lib.query.FooEnum',
   'foam.nanos.logger.Log',
-  'foam.nanos.logger.DAOLogger'
+  'foam.nanos.logger.DAOLogger',
+  'foam.nanos.logger.AbstractLogger'
 ];
 
 var abstractClasses = [

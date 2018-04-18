@@ -62,7 +62,6 @@ foam.CLASS({
       ],
       code: function createModel(type, detail) {
         return this.Log.create({
-          time: new Date(),
           from: 'Web',
           user: (! this.user) ? '' : '' + this.user.firstName + ' ' + this.user.lastName,
           type: type,

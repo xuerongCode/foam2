@@ -11,6 +11,8 @@ import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.management.RuntimeErrorException;
+
 public class LoggerDAO
   extends AbstractDAO
 {
@@ -24,24 +26,25 @@ public class LoggerDAO
   public LoggerDAO(X x, ClassInfo of, int max) {
     setX(x);
     setOf(of);
-    index_ = new AtomicInteger(0);
+    index_ = new AtomicInteger(-1);
     loggers_ = new FObject[max];
+    maxSize_ = max;
   }
 
   public FObject put_(X x, FObject obj) {
     if ( obj == null ) return obj;
     //find index to put value
-    int index = index_.getAndAdd(1) % maxSize_;
+    int index = index_.incrementAndGet() % maxSize_;
     loggers_[index] = obj;
     return obj;
-  }
+}
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     sink = prepareSink(sink);
     Sink         decorated = decorateSink_(sink, skip, limit, order, predicate);
     Subscription sub       = new Subscription();
     int length = index_.get();
-    length =  length > maxSize_ ? maxSize_ - 1 : length;
-    for ( int i = 0 ; i <= length ; i++ ) {
+    length =  length >= maxSize_ ? maxSize_ : length + 1;
+    for ( int i = 0 ; i < length ; i++ ) {
       if ( sub.getDetached() ) break;
       decorated.put(loggers_[i], sub);
     }
@@ -49,9 +52,9 @@ public class LoggerDAO
     return sink;
   }
   public FObject find_(X x, Object o) {
-    throw new RuntimeException("LoggerDAO do not support find_");
+    throw new java.lang.RuntimeException("LoggerDAO do not support find_");
   }
   public FObject remove_(X x, FObject obj) {
-    throw new RuntimeException("LoggerDAO do not support remove_");
+    throw new java.lang.RuntimeException("LoggerDAO do not support remove_");
   }
 }

@@ -7,9 +7,17 @@ foam.CLASS({
   package: 'foam.nanos.logger',
   name: 'Log',
 
-  tableColumns: ['time', 'from', 'belong', 'type', 'description', 'detail'],
+  tableColumns: ['time', 'from', 'user', 'type', 'detail'],
 
   properties: [
+    {
+      class: 'String',
+      name: 'id',
+      documentation: 'id for the log',
+      factory: function() {
+        return '' + this.time.getTime();
+      }
+    },
     {
       class: 'DateTime',
       name: 'time',
